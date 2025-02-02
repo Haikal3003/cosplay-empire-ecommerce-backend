@@ -22,7 +22,11 @@ async function login(req, res) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const token = generateToken(user.id);
+    await prisma.token.deleteMany({
+      where: { userId: user.id },
+    });
+
+    const token = await generateToken(user.id);
 
     return res.status(200).json({ user, token, message: 'User login successfully' });
   } catch (error) {
