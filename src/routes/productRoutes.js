@@ -1,13 +1,14 @@
 const express = require('express');
+const { isAuthenticated } = require('../middlewares/jwtMiddleware');
 const { getAllProducts, getProductById, getProductByCategory, createProduct, updateProductById, deleteProductById } = require('../controllers/productController');
 
 const router = express.Router();
 
-router.get('/', getAllProducts);
-router.get('/:id', getProductById);
-router.get('/:category', getProductByCategory);
-router.post('/', createProduct);
-router.put('/:id', updateProductById);
-router.delete('/:id', deleteProductById);
+router.get('/', isAuthenticated, getAllProducts);
+router.get('/:id', isAuthenticated, getProductById);
+router.get('/:category', isAuthenticated, getProductByCategory);
+router.post('/', isAuthenticated, createProduct);
+router.put('/:id', isAuthenticated, updateProductById);
+router.delete('/:id', isAuthenticated, deleteProductById);
 
 module.exports = router;
