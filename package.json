@@ -1,0 +1,22 @@
+{
+  "name": "cosplay-empire-backend",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Muhammad Fikry Haikal",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.3.0",
+    "bcrypt": "^5.1.1",
+    "cosplay-empire-backend": "file:",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.9",
+    "prisma": "^6.3.0"
+  }
+}

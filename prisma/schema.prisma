@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Size {
+  S
+  M
+  L
+  XL
+}
+
+model User {
+  id       String  @id @default(cuid())
+  fullname String
+  username String
+  email    String  @unique
+  password String?
+  image    String?
+  phone    String?
+  address  String?
+  role     Role    @default(USER)
+
+  oauthAccounts OauthAccount[]
+  tokens        Token[]
+
+  carts     Cart[]
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model OauthAccount {
+  id         String @id @default(cuid())
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  provider   String
+  providerId String @unique
+}
+
+model Token {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  token     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  description String
+  price       Decimal
+  image       String
+  category    Category[]    @relation("ProductCategory")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  sizes       ProductSize[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+}
+
+model ProductSize {
+  id        String  @id @default(cuid())
+  size      Size
+  stock     Int
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, size])
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  products Product[] @relation("ProductCategory")
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      Size
+  quantity  Int
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELED
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  total          Decimal
+  status         OrderStatus @default(PENDING)
+  shippingAdress String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @default(now()) @updatedAt
+
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      Size
+  quantity  Int
+  price     Decimal
+}
