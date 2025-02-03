@@ -5,7 +5,7 @@ async function getAllProducts(req, res) {
   try {
     const products = await prisma.product.findMany({
       include: {
-        categories: true,
+        category: true,
         sizes: true,
       },
     });
@@ -24,7 +24,7 @@ async function getProductById(req, res) {
     const product = await prisma.product.findUnique({
       where: { id: productId },
       include: {
-        categories: true,
+        category: true,
         sizes: true,
       },
     });
