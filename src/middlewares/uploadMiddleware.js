@@ -2,8 +2,8 @@ const { upload } = require('./multerConfig');
 
 const uploadPhotoMiddleware = (req, res, next) => {
   upload.single('image')(req, res, (error) => {
-    if (err) {
-      return res.status(400).json({ error: err.message });
+    if (error) {
+      return res.status(400).json({ error: error.message });
     }
     next();
   });
