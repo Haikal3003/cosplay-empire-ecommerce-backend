@@ -7,6 +7,8 @@ const uploadRoutes = require('./routes/uploadRoutes');
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { setupAdmin } = require('./setup/setupAdmin');
+const { prisma } = require('./config/db');
 require('dotenv').config();
 
 const app = express();
@@ -25,7 +27,19 @@ app.use('/products', productRoutes);
 app.use('/carts', cartRoutes);
 app.use('/uploads', uploadRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+const initializeApp = async () => {
+  try {
+    await setupAdmin();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await prisma.$disconnect();
+  }
+
+  const PORT = process.env.PORT;
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+};
+
+initializeApp();

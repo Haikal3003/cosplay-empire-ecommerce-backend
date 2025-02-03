@@ -1,5 +1,16 @@
 const { prisma } = require('../config/db');
 
+async function getAllUsers(req, res) {
+  try {
+    const user = await prisma.user.findMany();
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
 async function deleteUser(req, res) {
   try {
     const userId = req.params.id;
@@ -35,6 +46,7 @@ async function updateUser(req, res) {
 }
 
 module.exports = {
+  getAllUsers,
   deleteUser,
   updateUser,
 };

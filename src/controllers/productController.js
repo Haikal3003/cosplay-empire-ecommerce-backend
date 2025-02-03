@@ -1,4 +1,5 @@
 const { prisma } = require('../config/db');
+const { validateSizes } = require('../utils/sizeValidation');
 
 async function getAllProducts(req, res) {
   try {
@@ -66,21 +67,31 @@ async function createProduct(req, res) {
   try {
     const { name, description, price, image, categories, sizes } = req.body;
 
+    const invalidSizes = validateSizes(sizes);
+
+    if (invalidSizes.length > 0) {
+      return res.status(400).json({ message: 'Invalid sizes provided', invalidSizes });
+    }
+
     const newProduct = await prisma.product.create({
       data: {
         name,
         description,
         price,
         image,
-        categories: {
-          connect: categories.map((id) => ({ id })),
+        category: {
+          connectOrCreate: categories.map((categoryName) => ({
+            where: { name: categoryName },
+            create: { name: categoryName },
+          })),
         },
+
         sizes: {
           create: sizes,
         },
       },
       include: {
-        categories: true,
+        category: true,
         sizes: true,
       },
     });
@@ -97,6 +108,12 @@ async function updateProductById(req, res) {
     const productId = req.params.id;
     const { name, description, price, image, categories, sizes } = req.body;
 
+    const invalidSizes = validateSizes(sizes);
+
+    if (invalidSizes.length > 0) {
+      return res.status(400).json({ message: 'Invalid sizes provided', invalidSizes });
+    }
+
     const updatedProduct = await prisma.product.update({
       where: {
         id: productId,
@@ -106,8 +123,11 @@ async function updateProductById(req, res) {
         description,
         price,
         image,
-        categories: {
-          connect: categories.map((id) => ({ id })),
+        category: {
+          connectOrCreate: categories.map((categoryName) => ({
+            where: { name: categoryName },
+            create: { name: categoryName },
+          })),
         },
         sizes: {
           deleteMany: {},
@@ -115,7 +135,7 @@ async function updateProductById(req, res) {
         },
       },
       include: {
-        categories: true,
+        category: true,
         sizes: true,
       },
     });
