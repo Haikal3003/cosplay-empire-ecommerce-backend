@@ -8,9 +8,11 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 const { setupAdmin } = require('./setup/setupAdmin');
 const { prisma } = require('./config/db');
+const { isAuthenticated } = require('./middlewares/jwtMiddleware');
 require('dotenv').config();
 
 const app = express();
@@ -35,10 +37,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/auth', authRoutes);
+
+app.use(isAuthenticated);
+
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/carts', cartRoutes);
 app.use('/uploads', uploadRoutes);
+app.use('/orders', orderRoutes);
 
 const initializeApp = async () => {
   try {
