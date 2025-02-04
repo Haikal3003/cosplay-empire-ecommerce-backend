@@ -14,7 +14,7 @@ function isAuthenticated(req, res, next) {
       return res.status(401).json({ error: 'Invalid token' });
     }
   } else {
-    return res.status(401).json({ error: 'Token not provide' });
+    return res.status(401).json({ error: 'Token not provided' });
   }
 }
 

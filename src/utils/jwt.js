@@ -15,9 +15,13 @@ async function generateToken(userId) {
 
   return token;
 }
-
 function verifyToken(token) {
-  return jwt.verify(token, JWT_SECRET);
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    console.error('JWT Verification Error:', error.message);
+    return null;
+  }
 }
 
 async function hashPassword(password) {
