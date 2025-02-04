@@ -36,6 +36,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/', async (req, res) => {
+  res.json({ message: 'Hello world!' });
+});
+
 app.use('/api', authRoutes);
 
 app.use(isAuthenticated);
@@ -45,10 +49,6 @@ app.use('/api', productRoutes);
 app.use('/api', cartRoutes);
 app.use('/api', uploadRoutes);
 app.use('/api', orderRoutes);
-
-app.get('/', async (req, res) => {
-  res.json({ message: 'Hello world!' });
-});
 
 const initializeApp = async () => {
   try {
