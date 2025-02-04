@@ -6,7 +6,8 @@
     "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "build": "prisma generate && npm run build"
+    "build": "prisma generate && npm run build",
+    "postinstall": "prisma generate"
   },
   "author": "Muhammad Fikry Haikal",
   "license": "ISC",
