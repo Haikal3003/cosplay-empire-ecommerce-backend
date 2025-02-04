@@ -36,15 +36,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use(isAuthenticated);
 
-app.use('/users', userRoutes);
-app.use('/products', productRoutes);
-app.use('/carts', cartRoutes);
-app.use('/uploads', uploadRoutes);
-app.use('/orders', orderRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/carts', cartRoutes);
+app.use('/api/uploads', uploadRoutes);
+app.use('/api/orders', orderRoutes);
 
 const initializeApp = async () => {
   try {
@@ -54,11 +54,9 @@ const initializeApp = async () => {
   } finally {
     await prisma.$disconnect();
   }
-
-  const PORT = process.env.PORT;
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 };
 
-initializeApp();
+module.exports = async (req, res) => {
+  await initializeApp();
+  app(req, res);
+};
