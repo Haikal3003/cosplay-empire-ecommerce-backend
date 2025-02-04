@@ -54,6 +54,11 @@ const initializeApp = async () => {
   } finally {
     await prisma.$disconnect();
   }
+
+  // const PORT = process.env.PORT;
+  // app.listen(PORT, () => {
+  //   console.log(`Server running on http://localhost:${PORT}`);
+  // });
 };
 
 module.exports = async (req, res) => {
