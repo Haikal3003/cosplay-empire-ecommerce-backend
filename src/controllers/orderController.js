@@ -55,7 +55,7 @@ async function getOrderById(req, res) {
 
 async function createOrder(req, res) {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const { orderItems, shippingAddress } = req.body;
 
     if (!orderItems || orderItems.length === 0) {
