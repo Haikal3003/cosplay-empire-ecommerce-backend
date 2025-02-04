@@ -50,21 +50,21 @@ app.get('/', async (req, res) => {
   res.json({ message: 'Hello world!' });
 });
 
-const initializeApp = async () => {
-  try {
-    await setupAdmin();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    await prisma.$disconnect();
-  }
+// const initializeApp = async () => {
+//   try {
+//     await setupAdmin();
+//   } catch (error) {
+//     console.error(error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
 
-  const PORT = process.env.PORT;
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-};
+//   const PORT = process.env.PORT;
+//   app.listen(PORT, () => {
+//     console.log(`Server running on http://localhost:${PORT}`);
+//   });
+// };
 
-initializeApp();
+// initializeApp();
 
 module.exports = app;
