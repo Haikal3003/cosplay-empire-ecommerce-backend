@@ -3,12 +3,12 @@ const { getAllProductsInCart, addProductToCart, removeProductFromCart, clearProd
 
 const router = express.Router();
 
-router.get('/', getAllProductsInCart);
-router.post('/add', addProductToCart);
-router.delete('/item/:id', removeProductFromCart);
-router.delete('/clear', clearProductFromCart);
-router.put('/', updateCartItem);
-router.put('/increment', incrementCartItem);
-router.put('/decrement', decrementCartItem);
+router.get('/cart', getAllProductsInCart);
+router.post('/cart/add', addProductToCart);
+router.delete('/cart/item/:id', removeProductFromCart);
+router.delete('/cart/clear', clearProductFromCart);
+router.put('/cart/', updateCartItem);
+router.put('/cart/increment', incrementCartItem);
+router.put('/cart/decrement', decrementCartItem);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const { uploadPhotoMiddleware } = require('../middlewares/uploadMiddleware');
 
 const router = express.Router();
 
-router.post('/', uploadPhotoMiddleware, (req, res) => {
+router.post('/uploads', uploadPhotoMiddleware, (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No image uploaded' });
   }

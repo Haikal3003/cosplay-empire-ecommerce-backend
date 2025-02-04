@@ -3,10 +3,10 @@ const { getAllOrders, getOrderById, createOrder, updateOrderStatus, deleteOrder 
 
 const router = express.Router();
 
-router.get('/', getAllOrders);
-router.get('/:id', getOrderById);
-router.post('/', createOrder);
-router.put('/:id', updateOrderStatus);
-router.delete('/:id', deleteOrder);
+router.get('/orders', getAllOrders);
+router.get('/orders/:id', getOrderById);
+router.post('/orders', createOrder);
+router.put('/orders/:id', updateOrderStatus);
+router.delete('/orders/:id', deleteOrder);
 
 module.exports = router;

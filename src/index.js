@@ -36,15 +36,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/auth', authRoutes);
+app.use('/api', authRoutes);
 
 app.use(isAuthenticated);
 
-app.use('/users', userRoutes);
-app.use('/products', productRoutes);
-app.use('/carts', cartRoutes);
-app.use('/uploads', uploadRoutes);
-app.use('/orders', orderRoutes);
+app.use('/api', userRoutes);
+app.use('/api', productRoutes);
+app.use('/api', cartRoutes);
+app.use('/api', uploadRoutes);
+app.use('/api', orderRoutes);
 
 app.get('/', async (req, res) => {
   res.json({ message: 'Hello world!' });
