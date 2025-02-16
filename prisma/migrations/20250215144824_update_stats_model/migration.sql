@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE "Stats" (
+    "id" TEXT NOT NULL,
+    "totalUsers" INTEGER NOT NULL DEFAULT 0,
+    "totalCustomers" INTEGER NOT NULL DEFAULT 0,
+    "totalOrders" INTEGER NOT NULL DEFAULT 0,
+    "totalProducts" INTEGER NOT NULL DEFAULT 0,
+    "totalSales" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Stats_pkey" PRIMARY KEY ("id")
+);

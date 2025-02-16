@@ -127,6 +127,7 @@ model Order {
   total          Decimal
   status         OrderStatus @default(PENDING)
   shippingAdress String?
+  isPaid         Boolean     @default(false)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @default(now()) @updatedAt
 

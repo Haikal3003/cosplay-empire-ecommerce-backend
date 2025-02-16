@@ -9,6 +9,7 @@ const productRoutes = require('./src/routes/productRoutes');
 const cartRoutes = require('./src/routes/cartRoutes');
 const uploadRoutes = require('./src/routes/uploadRoutes');
 const orderRoutes = require('./src/routes/orderRoutes');
+const statsRoutes = require('./src/routes/statsRoutes');
 
 const { setupAdmin } = require('./src/setup/setupAdmin');
 const { prisma } = require('./src/config/db');
@@ -49,6 +50,7 @@ app.use('/api', productRoutes);
 app.use('/api', cartRoutes);
 app.use('/api', uploadRoutes);
 app.use('/api', orderRoutes);
+app.use('/api', statsRoutes);
 
 const initializeApp = async () => {
   try {
@@ -58,6 +60,12 @@ const initializeApp = async () => {
   } finally {
     await prisma.$disconnect();
   }
+
+  const PORT = process.env.PORT;
+
+  app.listen(PORT, () => {
+    console.log('Server running on localhost with port: ', PORT);
+  });
 };
 
 initializeApp();
