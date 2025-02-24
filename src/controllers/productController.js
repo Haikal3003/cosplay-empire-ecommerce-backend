@@ -66,11 +66,14 @@ async function getProductByCategory(req, res) {
 async function createProduct(req, res) {
   try {
     const { name, description, price, categories, sizes } = req.body;
-
     const image = req.file ? req.file.path : null;
 
-    const invalidSizes = validateSizes(sizes);
+    // Parse sizes dan categories
+    const sizesArray = sizes ? JSON.parse(sizes) : [];
+    const categoriesArray = categories ? categories.split(',').map((c) => c.trim()) : [];
+    const parsedPrice = parseInt(price, 10);
 
+    const invalidSizes = validateSizes(sizesArray);
     if (invalidSizes.length > 0) {
       return res.status(400).json({ message: 'Invalid sizes provided', invalidSizes });
     }
@@ -79,17 +82,16 @@ async function createProduct(req, res) {
       data: {
         name,
         description,
-        price,
+        price: parsedPrice,
         image,
         category: {
-          connectOrCreate: categories.map((categoryName) => ({
+          connectOrCreate: categoriesArray.map((categoryName) => ({
             where: { name: categoryName },
             create: { name: categoryName },
           })),
         },
-
         sizes: {
-          create: sizes,
+          create: sizesArray,
         },
       },
       include: {
@@ -111,20 +113,24 @@ async function updateProductById(req, res) {
     const { name, description, price, categories, sizes } = req.body;
     const newImage = req.file ? req.file.path : null;
 
-    const invalidSizes = validateSizes(sizes);
+    // Parse sizes dan categories
+    const sizesArray = sizes ? JSON.parse(sizes) : [];
+    const categoriesArray = categories ? categories.split(',').map((c) => c.trim()) : [];
+    const parsedPrice = parseInt(price, 10);
 
+    const invalidSizes = validateSizes(sizesArray);
     if (invalidSizes.length > 0) {
       return res.status(400).json({ message: 'Invalid sizes provided', invalidSizes });
     }
 
     const existingProduct = await prisma.product.findUnique({
-      where: {
-        id: productId,
-      },
-      select: {
-        image: true,
-      },
+      where: { id: productId },
+      select: { image: true },
     });
+
+    if (!existingProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
 
     if (newImage && existingProduct.image) {
       const oldImagePublicId = existingProduct.image.split('/').pop().split('.')[0];
@@ -132,23 +138,21 @@ async function updateProductById(req, res) {
     }
 
     const updatedProduct = await prisma.product.update({
-      where: {
-        id: productId,
-      },
+      where: { id: productId },
       data: {
         name,
         description,
-        price,
+        price: parsedPrice,
         image: newImage || existingProduct.image,
         category: {
-          connectOrCreate: categories.map((categoryName) => ({
+          connectOrCreate: categoriesArray.map((categoryName) => ({
             where: { name: categoryName },
             create: { name: categoryName },
           })),
         },
         sizes: {
-          deleteMany: {},
-          create: sizes,
+          deleteMany: {}, // Hapus semua ukuran lama
+          create: sizesArray, // Tambahkan ukuran baru
         },
       },
       include: {

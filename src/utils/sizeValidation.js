@@ -1,7 +1,12 @@
 const validSizes = ['S', 'M', 'L', 'XL'];
 
 function validateSizes(sizes) {
-  const invalidSizes = sizes.filter((size) => !validSizes.includes(size.size));
+  if (!Array.isArray(sizes)) {
+    return ['Sizes must be an array'];
+  }
+
+  const invalidSizes = sizes.filter((size) => typeof size !== 'object' || !validSizes.includes(size.size));
+
   return invalidSizes;
 }
 
