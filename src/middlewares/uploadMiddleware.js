@@ -1,4 +1,4 @@
-const { upload } = require('./multerConfig');
+const { upload } = require('../config/multerConfig');
 
 const uploadPhotoMiddleware = (req, res, next) => {
   upload.single('image')(req, res, (error) => {

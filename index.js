@@ -7,7 +7,6 @@ const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const productRoutes = require('./src/routes/productRoutes');
 const cartRoutes = require('./src/routes/cartRoutes');
-const uploadRoutes = require('./src/routes/uploadRoutes');
 const orderRoutes = require('./src/routes/orderRoutes');
 const statsRoutes = require('./src/routes/statsRoutes');
 
@@ -21,8 +20,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-
-app.use('/uploads', express.static('uploads'));
 
 app.use(express.json());
 
@@ -48,7 +45,6 @@ app.use(isAuthenticated);
 app.use('/api', userRoutes);
 app.use('/api', productRoutes);
 app.use('/api', cartRoutes);
-app.use('/api', uploadRoutes);
 app.use('/api', orderRoutes);
 app.use('/api', statsRoutes);
 

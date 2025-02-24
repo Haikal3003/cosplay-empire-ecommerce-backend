@@ -27,18 +27,38 @@ async function deleteUser(req, res) {
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
-
 async function updateUser(req, res) {
   try {
     const userId = req.params.id;
     const updatedData = req.body;
+    const newImage = req.file ? req.file.path : null;
 
-    await prisma.user.update({
+    const existingUser = await prisma.user.findUnique({
       where: { id: userId },
-      data: updatedData,
+      select: { image: true },
     });
 
-    return res.status(200).json({ message: 'User updated successfully!' });
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (newImage && existingUser.image) {
+      const oldImagePublicId = existingUser.image.split('/').pop().split('.')[0];
+      await cloudinary.uploader.destroy(`avatars/${oldImagePublicId}`);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...updatedData,
+        image: newImage || existingUser.image,
+      },
+    });
+
+    return res.status(200).json({
+      message: 'User updated successfully!',
+      user: updatedUser,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Internal server error' });

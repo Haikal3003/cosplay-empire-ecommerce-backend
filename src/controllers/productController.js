@@ -65,7 +65,9 @@ async function getProductByCategory(req, res) {
 
 async function createProduct(req, res) {
   try {
-    const { name, description, price, image, categories, sizes } = req.body;
+    const { name, description, price, categories, sizes } = req.body;
+
+    const image = req.file ? req.file.path : null;
 
     const invalidSizes = validateSizes(sizes);
 
@@ -106,12 +108,27 @@ async function createProduct(req, res) {
 async function updateProductById(req, res) {
   try {
     const productId = req.params.id;
-    const { name, description, price, image, categories, sizes } = req.body;
+    const { name, description, price, categories, sizes } = req.body;
+    const newImage = req.file ? req.file.path : null;
 
     const invalidSizes = validateSizes(sizes);
 
     if (invalidSizes.length > 0) {
       return res.status(400).json({ message: 'Invalid sizes provided', invalidSizes });
+    }
+
+    const existingProduct = await prisma.product.findUnique({
+      where: {
+        id: productId,
+      },
+      select: {
+        image: true,
+      },
+    });
+
+    if (newImage && existingProduct.image) {
+      const oldImagePublicId = existingProduct.image.split('/').pop().split('.')[0];
+      await cloudinary.uploader.destroy(`cosplay_empire/${oldImagePublicId}`);
     }
 
     const updatedProduct = await prisma.product.update({
@@ -122,7 +139,7 @@ async function updateProductById(req, res) {
         name,
         description,
         price,
-        image,
+        image: newImage || existingProduct.image,
         category: {
           connectOrCreate: categories.map((categoryName) => ({
             where: { name: categoryName },
